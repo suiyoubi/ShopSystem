@@ -5,13 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * TODO: Add description Here.
+ * The entity for shop
  * Created by ao on 2018-09-20
  */
+@Data
 @Entity
-public class Shop {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Shop extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

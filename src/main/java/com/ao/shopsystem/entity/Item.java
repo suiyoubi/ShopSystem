@@ -5,13 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * TODO: Add description Here.
+ * Entity class of item.
  * Created by ao on 2018-09-20
  */
+@Data
 @Entity
-public class Item {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Item extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +29,7 @@ public class Item {
 
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long price;
+
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT NULL")
+    private String description;
 }

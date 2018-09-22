@@ -37,7 +37,7 @@ public class ProductController {
 
         log.info(ControllerLogHelper.NEW_API_CALL);
 
-        Product product = this.productService.getById(productId);
+        Product product = this.productService.findById(productId);
 
         log.info(ControllerLogHelper.SUCCESS_MESSAGE + "Fetch the product with id {}", productId);
 
@@ -45,7 +45,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductResponseDto createProduct(@RequestBody ProductRequestDto productRequestDto) {
+    public ProductResponseDto createProduct(@RequestBody ProductRequestDto productRequestDto)
+            throws NotFoundException {
 
         log.info(ControllerLogHelper.NEW_API_CALL);
 
@@ -72,6 +73,7 @@ public class ProductController {
                 .productId(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
+                .shop(ShopController.convertModel(product.getShop()))
                 .description(product.getDescription())
                 .build();
     }

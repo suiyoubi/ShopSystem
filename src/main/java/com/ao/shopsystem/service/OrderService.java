@@ -4,8 +4,10 @@ import com.ao.shopsystem.controller.dto.order.OrderRequestDto;
 import com.ao.shopsystem.entity.LineItem;
 import com.ao.shopsystem.entity.Order;
 import com.ao.shopsystem.entity.Product;
+import com.ao.shopsystem.entity.Shop;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.OrderRepository;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +46,7 @@ public class OrderService {
      * @return the entity of oder
      * @throws NotFoundException if no such entity being found
      */
-    public Order getOrder(Long id) throws NotFoundException {
+    public Order findById(Long id) throws NotFoundException {
 
         log.info("Trying to fetch order with id {}", id);
 
@@ -71,7 +73,8 @@ public class OrderService {
      * @return the updated {@link Order} entity
      * @throws NotFoundException if no order with orderId or product with itemId being found
      */
-    public Order updateOrder(Long orderId, Long itemId, Long newQuantity) throws NotFoundException {
+    public Order updateProductInOrder(Long orderId, Long itemId, Long newQuantity)
+            throws NotFoundException {
 
         log.info("Trying to fetch order with id {}", orderId);
 
@@ -84,9 +87,9 @@ public class OrderService {
             throw new NotFoundException("Order Id is not found");
         }
 
-        Order order = this.getOrder(orderId);
+        Order order = this.findById(orderId);
 
-        Product product = this.productService.getById(itemId);
+        Product product = this.productService.findById(itemId);
 
         Optional<LineItem> orderToItemOptional = order.getLineItems().stream().filter(
                 lineItem -> lineItem.getProduct().equals(product)
@@ -141,7 +144,7 @@ public class OrderService {
 
                         Product product;
                         try {
-                            product = this.productService.getById(itemId);
+                            product = this.productService.findById(itemId);
                         } catch (NotFoundException e) {
 
                             throw new RuntimeException(e);
@@ -166,5 +169,48 @@ public class OrderService {
         }
 
         return this.orderRepository.save(order);
+    }
+
+    /**
+     * update the shop field in the {@link Order}
+     *
+     * @param orderId the id of the order
+     * @param shopId the id of the shop
+     * @return the updated product entity
+     * @throws NotFoundException if no such order or shop being found
+     */
+    public Order updateShopInfo(Long orderId, Long shopId) throws NotFoundException {
+
+        log.info("updating order: {} with new shop: {}", orderId, shopId);
+
+        Order order = findById(orderId);
+
+        Shop shop = this.shopService.findById(shopId);
+
+        order.setShop(shop);
+
+        return this.orderRepository.save(order);
+    }
+
+    /**
+     * soft delete the order with specified Id
+     *
+     * @param orderId id of the order to be deleted
+     * @throws NotFoundException no such order being found
+     */
+    public void delete(Long orderId) throws NotFoundException {
+
+        log.info("deleting order with id: {}", orderId);
+
+        Order order = findById(orderId);
+
+        // Also delete all the line items of the order
+        order.getLineItems().forEach(
+                lineItem -> lineItem.setDeletedAt(ZonedDateTime.now())
+        );
+
+        order.setDeletedAt(ZonedDateTime.now());
+
+        this.orderRepository.save(order);
     }
 }

@@ -49,7 +49,7 @@ public class ShopService {
     }
 
     /**
-     * get {@link Shop} by its Id (Primary Key)
+     * find {@link Shop} by its Id (Primary Key)
      *
      * @param id the id of the shop
      * @return the targeted entity
@@ -93,5 +93,24 @@ public class ShopService {
         this.shopRepository.save(item.get());
 
         log.info("Soft-Deleted product with id {}", id);
+    }
+
+    /**
+     * update the address field in the {@link Shop}
+     *
+     * @param shopId the id of the shop
+     * @param newAddress new address that replaces the original address
+     * @return the updated shop entity
+     * @throws NotFoundException if no such shop being found
+     */
+    public Shop updateAddress(Long shopId, String newAddress) throws NotFoundException {
+
+        log.info("updating the address of shop: {}", shopId);
+
+        Shop shop = this.findById(shopId);
+
+        shop.setAddress(newAddress);
+
+        return this.shopRepository.save(shop);
     }
 }

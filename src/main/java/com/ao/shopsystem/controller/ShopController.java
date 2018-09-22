@@ -9,6 +9,7 @@ import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +64,23 @@ public class ShopController {
 
         log.info(ControllerLogHelper.SUCCESS_MESSAGE + "deleted the shop with id {}", shopId);
 
+    }
+
+    @PatchMapping("/{shopId}/address")
+    public ShopResponseDto changeAddress(@PathVariable Long shopId, @RequestBody String newAddress)
+            throws NotFoundException {
+
+        log.info(ControllerLogHelper.NEW_API_CALL);
+
+        Shop shop = this.shopService.updateAddress(shopId, newAddress);
+
+        log.info(
+                ControllerLogHelper.SUCCESS_MESSAGE + "updated the shop {} with new address: {}",
+                shopId,
+                newAddress
+        );
+
+        return ShopController.convertModel(shop);
     }
 
     static ShopResponseDto convertModel(Shop shop) {

@@ -2,6 +2,7 @@ package com.ao.shopsystem.service;
 
 import com.ao.shopsystem.controller.dto.product.ProductRequestDto;
 import com.ao.shopsystem.entity.Product;
+import com.ao.shopsystem.entity.Shop;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.ProductRepository;
 import java.time.ZonedDateTime;
@@ -21,9 +22,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final ShopService shopService;
+
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ShopService shopService) {
+
         this.productRepository = productRepository;
+        this.shopService = shopService;
     }
 
     /**
@@ -31,14 +36,16 @@ public class ProductService {
      *
      * @param productDto the Dto of the product
      * @return the created entity
+     * @throws NotFoundException if no {@link com.ao.shopsystem.entity.Shop} with shopId being found
      */
-    public Product create(ProductRequestDto productDto) {
+    public Product create(ProductRequestDto productDto) throws NotFoundException {
 
         log.info(
-                "Adding a new Product - name: {} ({}) with price: {}",
+                "Adding a new Product - name: {} ({}) with price: {} and shopId: {}",
                 productDto.getName(),
                 productDto.getDescription(),
-                productDto.getPrice()
+                productDto.getPrice(),
+                productDto.getShopId()
         );
 
         Product product = new Product();
@@ -46,6 +53,10 @@ public class ProductService {
         product.setPrice(productDto.getPrice());
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
+
+        if (Objects.nonNull(productDto.getShopId())) {
+            product.setShop(this.shopService.findById(productDto.getShopId()));
+        }
 
         return this.productRepository.save(product);
     }
@@ -57,7 +68,7 @@ public class ProductService {
      * @return the targeted entity
      * @throws NotFoundException if no such entity being found
      */
-    public Product getById(Long id) throws NotFoundException {
+    public Product findById(Long id) throws NotFoundException {
 
         log.info("Trying to fetch product with id {}", id);
 
@@ -71,6 +82,27 @@ public class ProductService {
 
         log.error("No product found with id {}", id);
         throw new NotFoundException("Product is not found");
+    }
+
+    /**
+     * update the shop field in the {@link Product}
+     *
+     * @param productId the id of the product
+     * @param shopId the id of the shop
+     * @return the updated product entity
+     * @throws NotFoundException if no such product or shop being found
+     */
+    public Product updateShopInfo(Long productId, Long shopId) throws NotFoundException {
+
+        log.info("updating product: {} with new shop: {}", productId, shopId);
+
+        Product product = this.findById(productId);
+
+        Shop shop = this.shopService.findById(shopId);
+
+        product.setShop(shop);
+
+        return this.productRepository.save(product);
     }
 
     /**

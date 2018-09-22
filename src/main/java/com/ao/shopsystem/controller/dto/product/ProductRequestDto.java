@@ -20,4 +20,6 @@ public class ProductRequestDto {
     private Long price;
 
     private String description;
+
+    private Long shopId;
 }

@@ -1,5 +1,6 @@
 package com.ao.shopsystem.controller.dto.product;
 
+import com.ao.shopsystem.controller.dto.shop.ShopResponseDto;
 import com.ao.shopsystem.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,6 @@ public class ProductResponseDto {
     private Long price;
 
     private String description;
+
+    private ShopResponseDto shop;
 }

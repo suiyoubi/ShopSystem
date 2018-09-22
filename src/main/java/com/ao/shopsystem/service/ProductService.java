@@ -1,6 +1,6 @@
 package com.ao.shopsystem.service;
 
-import com.ao.shopsystem.controller.dto.item.ProductDTO;
+import com.ao.shopsystem.controller.dto.product.ProductRequestDto;
 import com.ao.shopsystem.entity.Product;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.ProductRepository;
@@ -26,24 +26,37 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product create(ProductDTO productDTO) {
+    /**
+     * create a {@link Product}
+     *
+     * @param productDto the Dto of the product
+     * @return the created entity
+     */
+    public Product create(ProductRequestDto productDto) {
 
         log.info(
-                "Adding a new Product - name {} ({}) with price {}",
-                productDTO.getName(),
-                productDTO.getDescription(),
-                productDTO.getPrice()
+                "Adding a new Product - name: {} ({}) with price: {}",
+                productDto.getName(),
+                productDto.getDescription(),
+                productDto.getPrice()
         );
 
         Product product = new Product();
 
-        product.setPrice(productDTO.getPrice());
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
 
         return this.productRepository.save(product);
     }
 
+    /**
+     * get {@link Product} by its Id (Primary Key)
+     *
+     * @param id the id of the product
+     * @return the targeted entity
+     * @throws NotFoundException if no such entity being found
+     */
     public Product getById(Long id) throws NotFoundException {
 
         log.info("Trying to fetch product with id {}", id);
@@ -60,6 +73,12 @@ public class ProductService {
         throw new NotFoundException("Product is not found");
     }
 
+    /**
+     * soft delete the product by its id
+     *
+     * @param id the id of the product
+     * @throws NotFoundException if no such entity being found
+     */
     public void delete(Long id) throws NotFoundException {
 
         log.info("Deleting product with id {}", id);
@@ -74,7 +93,5 @@ public class ProductService {
         item.get().setDeletedAt(ZonedDateTime.now());
 
         this.productRepository.save(item.get());
-
-        log.info("Soft-Deleted product with id {}", id);
     }
 }

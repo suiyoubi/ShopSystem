@@ -1,4 +1,4 @@
-package com.ao.shopsystem.controller.dto.item;
+package com.ao.shopsystem.controller.dto.product;
 
 import com.ao.shopsystem.entity.Product;
 import lombok.Getter;
@@ -8,9 +8,9 @@ import lombok.Getter;
  * Created by ao on 2018-09-22
  */
 @Getter
-public class ItemQuantityPair {
+public class ProductQuantityPair {
 
-    private Long itemId;
+    private Long productId;
 
     private Long quantity;
 }

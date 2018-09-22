@@ -1,10 +1,10 @@
 package com.ao.shopsystem.controller;
 
-import com.ao.shopsystem.controller.dto.item.ProductDTO;
+import com.ao.shopsystem.controller.dto.product.ProductRequestDto;
+import com.ao.shopsystem.controller.dto.product.ProductResponseDto;
 import com.ao.shopsystem.entity.Product;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.service.ProductService;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/products")
 public class ProductController {
 
-    private static final String NEW_API_CALL = "NEW API Call: ";
-    private static final String FAILURE_MESSAGE = "Failure: ";
-    private static final String SUCCESS_MESSAGE = "Success: ";
-
     private final ProductService productService;
 
     @Autowired
@@ -37,29 +33,26 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ProductDTO getItem(@PathVariable Long productId) throws NotFoundException {
+    public ProductResponseDto getItem(@PathVariable Long productId) throws NotFoundException {
 
-        log.info(NEW_API_CALL + "Trying to fetch item with id {}", productId);
+        log.info(ControllerLogHelper.NEW_API_CALL);
 
         Product product = this.productService.getById(productId);
 
-        if (Objects.isNull(product)) {
-            log.error(FAILURE_MESSAGE + "No item found with id {}", productId);
-
-            throw new NotFoundException("No item found with id");
-        }
-
-        log.info(SUCCESS_MESSAGE + "Fetch the item with id {}", productId);
+        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "Fetch the product with id {}", productId);
 
         return ProductController.convertModel(product);
     }
 
     @PostMapping
-    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
+    public ProductResponseDto createProduct(@RequestBody ProductRequestDto productRequestDto) {
 
-        log.info(NEW_API_CALL);
+        log.info(ControllerLogHelper.NEW_API_CALL);
 
-        Product product = this.productService.create(productDTO);
+        Product product = this.productService.create(productRequestDto);
+
+        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "created the product with id {}",
+                product.getId());
 
         return ProductController.convertModel(product);
     }
@@ -67,28 +60,19 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public void deleteProduct(@PathVariable Long productId) throws NotFoundException {
 
-        log.info(NEW_API_CALL);
+        log.info(ControllerLogHelper.NEW_API_CALL);
 
         this.productService.delete(productId);
+
+        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "deleted the product with id {}", productId);
     }
 
-    private static ProductDTO convertModel(Product product) {
-        return ProductDTO.builder()
+    private static ProductResponseDto convertModel(Product product) {
+        return ProductResponseDto.builder()
                 .productId(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .build();
-    }
-
-    private static Product convertToEntity(ProductDTO productDTO) {
-
-        Product product = new Product();
-
-        product.setPrice(product.getPrice());
-        product.setName(product.getName());
-        product.setDescription(product.getDescription());
-
-        return product;
     }
 }

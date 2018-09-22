@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * The DTO for the line item.
+ * The DTO for the line product.
  * Created by ao on 2018-09-22
  */
 @Builder
 @Getter
 @ToString
-public class LineItemResponseDTO {
+public class LineItemResponseDto {
 
     private Long productId;
 

@@ -1,9 +1,9 @@
 package com.ao.shopsystem.controller;
 
-import com.ao.shopsystem.controller.dto.item.ItemQuantityPair;
-import com.ao.shopsystem.controller.dto.lineitem.LineItemResponseDTO;
-import com.ao.shopsystem.controller.dto.order.OrderRequestDTO;
-import com.ao.shopsystem.controller.dto.order.OrderResponseDTO;
+import com.ao.shopsystem.controller.dto.lineitem.LineItemResponseDto;
+import com.ao.shopsystem.controller.dto.order.OrderRequestDto;
+import com.ao.shopsystem.controller.dto.order.OrderResponseDto;
+import com.ao.shopsystem.controller.dto.product.ProductQuantityPair;
 import com.ao.shopsystem.entity.Order;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.service.OrderService;
@@ -36,7 +36,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    private OrderResponseDTO getOrder(@PathVariable Long orderId) throws NotFoundException {
+    private OrderResponseDto getOrder(@PathVariable Long orderId) throws NotFoundException {
 
         Order order = this.orderService.getOrder(orderId);
 
@@ -44,31 +44,33 @@ public class OrderController {
     }
 
     @PostMapping
-    private OrderResponseDTO createOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+    private OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto)
+            throws NotFoundException {
 
-        Order order = this.orderService.createOrder(orderRequestDTO);
+        Order order = this.orderService.createOrder(orderRequestDto);
 
         return OrderController.convertModel(order);
     }
 
     @PutMapping("/{orderId}")
-    private OrderResponseDTO updateItemQuantity(@RequestBody ItemQuantityPair itemQuantityPair,
-            @PathVariable Long orderId)
-            throws NotFoundException {
+    private OrderResponseDto updateItemQuantity(
+            @RequestBody ProductQuantityPair productQuantityPair,
+            @PathVariable Long orderId
+    ) throws NotFoundException {
 
         Order order = this.orderService.updateOrder(
                 orderId,
-                itemQuantityPair.getItemId(),
-                itemQuantityPair.getQuantity()
+                productQuantityPair.getProductId(),
+                productQuantityPair.getQuantity()
         );
 
         return OrderController.convertModel(order);
     }
 
-    private static OrderResponseDTO convertModel(Order order) {
+    private static OrderResponseDto convertModel(Order order) {
 
-        List<LineItemResponseDTO> lineItems = order.getLineItems().stream().map(
-                lineItem -> LineItemResponseDTO.builder()
+        List<LineItemResponseDto> lineItems = order.getLineItems().stream().map(
+                lineItem -> LineItemResponseDto.builder()
                         .productId(lineItem.getProduct().getId())
                         .productName(lineItem.getProduct().getName())
                         .quantity(lineItem.getQuantity())
@@ -78,13 +80,14 @@ public class OrderController {
         ).collect(Collectors.toList());
 
         Long orderTotalPrice = lineItems.stream()
-                .map(LineItemResponseDTO::getTotalPrice)
+                .map(LineItemResponseDto::getTotalPrice)
                 .reduce((x, y) -> x + y)
                 .orElse(0L);
 
-        return OrderResponseDTO.builder()
+        return OrderResponseDto.builder()
                 .name(order.getName())
                 .lineItems(lineItems)
+                .shop(ShopController.convertModel(order.getShop()))
                 .orderTotalPrice(orderTotalPrice)
                 .build();
     }

@@ -1,24 +1,19 @@
-package com.ao.shopsystem.controller.dto.item;
+package com.ao.shopsystem.controller.dto.product;
 
-import com.ao.shopsystem.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
- * DTO for the {@link Product}
- * Created by ao on 2018-09-21
+ * The request DTO for {@link com.ao.shopsystem.entity.Product}
+ * Created by ao on 2018-09-22
  */
 @Builder
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-
-    private Long productId;
+public class ProductRequestDto {
 
     private String name;
 

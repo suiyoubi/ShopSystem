@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class of item.
+ * Entity class of product.
  * Created by ao on 2018-09-20
  */
 @Data

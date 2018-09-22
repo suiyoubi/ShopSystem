@@ -1,9 +1,9 @@
 package com.ao.shopsystem.service;
 
-import com.ao.shopsystem.controller.dto.order.OrderRequestDTO;
-import com.ao.shopsystem.entity.Product;
-import com.ao.shopsystem.entity.Order;
+import com.ao.shopsystem.controller.dto.order.OrderRequestDto;
 import com.ao.shopsystem.entity.LineItem;
+import com.ao.shopsystem.entity.Order;
+import com.ao.shopsystem.entity.Product;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.OrderRepository;
 import java.util.LinkedList;
@@ -24,14 +24,21 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     private final ProductService productService;
+    private final ShopService shopService;
 
-    public OrderService(OrderRepository orderRepository, ProductService productService) {
+    public OrderService(
+            OrderRepository orderRepository,
+            ProductService productService,
+            ShopService shopService
+    ) {
 
         this.orderRepository = orderRepository;
         this.productService = productService;
+        this.shopService = shopService;
     }
 
-    /** retrieve the {@link Order} with the given id
+    /**
+     * retrieve the {@link Order} with the given id
      *
      * @param id the id of order
      * @return the entity of oder
@@ -54,14 +61,15 @@ public class OrderService {
         throw new NotFoundException("Order is not found");
     }
 
-    /** update the {@link Order} such that the {@link Product} that associated with now have newQuantity.
-     * If the item is not in the order, add it to the oder with the newQuantity.
+    /**
+     * update the {@link Order} such that the {@link Product} that associated with now have newQuantity.
+     * If the product is not in the order, add it to the oder with the newQuantity.
      *
      * @param orderId Id of the Order
      * @param itemId Id of the Item
-     * @param newQuantity the new quantity of the item that will be used to replace the old value
+     * @param newQuantity the new quantity of the product that will be used to replace the old value
      * @return the updated {@link Order} entity
-     * @throws NotFoundException if no order with orderId or item with itemId being found
+     * @throws NotFoundException if no order with orderId or product with itemId being found
      */
     public Order updateOrder(Long orderId, Long itemId, Long newQuantity) throws NotFoundException {
 
@@ -86,10 +94,9 @@ public class OrderService {
 
         LineItem lineItem;
 
-
         if (!orderToItemOptional.isPresent()) {
 
-            // The item is not in the order, add to the order
+            // The product is not in the order, add to the order
             lineItem = new LineItem();
 
             lineItem.setQuantity(newQuantity);
@@ -99,7 +106,7 @@ public class OrderService {
             order.getLineItems().add(lineItem);
         } else {
 
-            // The item is in the order, update the quantity
+            // The product is in the order, update the quantity
             lineItem = orderToItemOptional.get();
             lineItem.setQuantity(newQuantity);
         }
@@ -107,27 +114,29 @@ public class OrderService {
         return this.orderRepository.save(order);
     }
 
-    /** create the {@link} Order
+    /**
+     * create the {@link} Order
      *
-     * @param orderRequestDTO The request DTO for order
+     * @param orderRequestDto The request DTO for order
      * @return the entity of the created order
      */
-    public Order createOrder(OrderRequestDTO orderRequestDTO) {
+    public Order createOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
 
         log.info(
-                "Adding a new order - name {} with items {}",
-                orderRequestDTO.getName(),
-                orderRequestDTO.getItems()
+                "Adding a new order - name {} with items {} in shop: {}",
+                orderRequestDto.getName(),
+                orderRequestDto.getItems(),
+                orderRequestDto.getShopId()
         );
 
         Order order = new Order();
 
-        order.setName(orderRequestDTO.getName());
+        order.setName(orderRequestDto.getName());
 
         List<LineItem> lineItems = new LinkedList<>();
 
-        if (Objects.nonNull(orderRequestDTO.getItems())) {
-            orderRequestDTO.getItems().forEach(
+        if (Objects.nonNull(orderRequestDto.getItems())) {
+            orderRequestDto.getItems().forEach(
                     (itemId, quantity) -> {
 
                         Product product;
@@ -150,6 +159,11 @@ public class OrderService {
         }
 
         order.setLineItems(lineItems);
+
+        // Order with no shop information is allowed
+        if (Objects.nonNull(orderRequestDto.getShopId())) {
+            order.setShop(this.shopService.findById(orderRequestDto.getShopId()));
+        }
 
         return this.orderRepository.save(order);
     }

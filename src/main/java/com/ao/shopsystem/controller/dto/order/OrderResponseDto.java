@@ -1,6 +1,7 @@
 package com.ao.shopsystem.controller.dto.order;
 
-import com.ao.shopsystem.controller.dto.lineitem.LineItemResponseDTO;
+import com.ao.shopsystem.controller.dto.lineitem.LineItemResponseDto;
+import com.ao.shopsystem.controller.dto.shop.ShopResponseDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,11 +15,15 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class OrderResponseDTO {
+public class OrderResponseDto {
+
+    private Long orderId;
 
     private String name;
 
-    private List<LineItemResponseDTO> lineItems;
+    private List<LineItemResponseDto> lineItems;
 
     private Long orderTotalPrice;
+
+    private ShopResponseDto shop;
 }

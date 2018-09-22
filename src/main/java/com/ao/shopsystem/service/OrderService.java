@@ -1,9 +1,9 @@
 package com.ao.shopsystem.service;
 
 import com.ao.shopsystem.controller.dto.order.OrderRequestDTO;
-import com.ao.shopsystem.entity.Item;
+import com.ao.shopsystem.entity.Product;
 import com.ao.shopsystem.entity.Order;
-import com.ao.shopsystem.entity.OrderToItem;
+import com.ao.shopsystem.entity.LineItem;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.OrderRepository;
 import java.util.LinkedList;
@@ -23,12 +23,12 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final ItemService itemService;
+    private final ProductService productService;
 
-    public OrderService(OrderRepository orderRepository, ItemService itemService) {
+    public OrderService(OrderRepository orderRepository, ProductService productService) {
 
         this.orderRepository = orderRepository;
-        this.itemService = itemService;
+        this.productService = productService;
     }
 
     /** retrieve the {@link Order} with the given id
@@ -54,7 +54,7 @@ public class OrderService {
         throw new NotFoundException("Order is not found");
     }
 
-    /** update the {@link Order} such that the {@link Item} that associated with now have newQuantity.
+    /** update the {@link Order} such that the {@link Product} that associated with now have newQuantity.
      * If the item is not in the order, add it to the oder with the newQuantity.
      *
      * @param orderId Id of the Order
@@ -78,30 +78,30 @@ public class OrderService {
 
         Order order = this.getOrder(orderId);
 
-        Item item = this.itemService.getById(itemId);
+        Product product = this.productService.getById(itemId);
 
-        Optional<OrderToItem> orderToItemOptional = order.getOrderToItems().stream().filter(
-                orderToItem -> orderToItem.getItem().equals(item)
+        Optional<LineItem> orderToItemOptional = order.getLineItems().stream().filter(
+                lineItem -> lineItem.getProduct().equals(product)
         ).findFirst();
 
-        OrderToItem orderToItem;
+        LineItem lineItem;
 
 
         if (!orderToItemOptional.isPresent()) {
 
             // The item is not in the order, add to the order
-            orderToItem = new OrderToItem();
+            lineItem = new LineItem();
 
-            orderToItem.setQuantity(newQuantity);
-            orderToItem.setItem(item);
-            orderToItem.setOrder(order);
+            lineItem.setQuantity(newQuantity);
+            lineItem.setProduct(product);
+            lineItem.setOrder(order);
 
-            order.getOrderToItems().add(orderToItem);
+            order.getLineItems().add(lineItem);
         } else {
 
             // The item is in the order, update the quantity
-            orderToItem = orderToItemOptional.get();
-            orderToItem.setQuantity(newQuantity);
+            lineItem = orderToItemOptional.get();
+            lineItem.setQuantity(newQuantity);
         }
 
         return this.orderRepository.save(order);
@@ -124,32 +124,32 @@ public class OrderService {
 
         order.setName(orderRequestDTO.getName());
 
-        List<OrderToItem> orderToItems = new LinkedList<>();
+        List<LineItem> lineItems = new LinkedList<>();
 
         if (Objects.nonNull(orderRequestDTO.getItems())) {
             orderRequestDTO.getItems().forEach(
                     (itemId, quantity) -> {
 
-                        Item item;
+                        Product product;
                         try {
-                            item = this.itemService.getById(itemId);
+                            product = this.productService.getById(itemId);
                         } catch (NotFoundException e) {
 
                             throw new RuntimeException(e);
                         }
 
-                        OrderToItem orderToItem = new OrderToItem();
+                        LineItem lineItem = new LineItem();
 
-                        orderToItem.setItem(item);
-                        orderToItem.setQuantity(quantity);
-                        orderToItem.setOrder(order);
+                        lineItem.setProduct(product);
+                        lineItem.setQuantity(quantity);
+                        lineItem.setOrder(order);
 
-                        orderToItems.add(orderToItem);
+                        lineItems.add(lineItem);
                     }
             );
         }
 
-        order.setOrderToItems(orderToItems);
+        order.setLineItems(lineItems);
 
         return this.orderRepository.save(order);
     }

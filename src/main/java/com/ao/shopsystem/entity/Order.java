@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -20,8 +21,10 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+// Use a different name because ORDER is a reserved word
 @Table(name = "order_table")
 public class Order extends BaseEntity {
 
@@ -35,5 +38,5 @@ public class Order extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
-    private List<OrderToItem> orderToItems;
+    private List<LineItem> lineItems;
 }

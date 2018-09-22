@@ -9,16 +9,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
- * The Entity for the ManyToMany relationship between {@link Order} and {@link Item}
+ * The Entity for the ManyToMany relationship between {@link Order} and {@link Product}
  * Created by ao on 2018-09-21
  */
 @Entity
 @IdClass(CompositePK.class)
 @Data
-@Table(name = "order_item")
-public class OrderToItem extends BaseEntity {
+@EqualsAndHashCode(callSuper = true)
+@Table(name = "lineItem")
+public class LineItem extends BaseEntity {
 
     @Id
     @ManyToOne
@@ -27,8 +29,8 @@ public class OrderToItem extends BaseEntity {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 1")
     private Long quantity;
@@ -38,5 +40,5 @@ class CompositePK implements Serializable {
 
     private Order order;
 
-    private Item item;
+    private Product product;
 }

@@ -1,15 +1,14 @@
 package com.ao.shopsystem.controller;
 
-import com.ao.shopsystem.controller.dto.item.ItemDTO;
 import com.ao.shopsystem.controller.dto.item.ItemQuantityPair;
+import com.ao.shopsystem.controller.dto.lineitem.LineItemResponseDTO;
 import com.ao.shopsystem.controller.dto.order.OrderRequestDTO;
 import com.ao.shopsystem.controller.dto.order.OrderResponseDTO;
 import com.ao.shopsystem.entity.Order;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.service.OrderService;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,28 +67,25 @@ public class OrderController {
 
     private static OrderResponseDTO convertModel(Order order) {
 
-        Map<ItemDTO, Long> itemDTOLongMap = new HashMap<>();
+        List<LineItemResponseDTO> lineItems = order.getLineItems().stream().map(
+                lineItem -> LineItemResponseDTO.builder()
+                        .productId(lineItem.getProduct().getId())
+                        .productName(lineItem.getProduct().getName())
+                        .quantity(lineItem.getQuantity())
+                        .unitPrice(lineItem.getProduct().getPrice())
+                        .totalPrice(lineItem.getProduct().getPrice() * lineItem.getQuantity())
+                        .build()
+        ).collect(Collectors.toList());
 
-        AtomicReference<Long> totalAmount = new AtomicReference<>(0L);
-
-        order.getOrderToItems().forEach(
-                orderToItem -> {
-
-                    itemDTOLongMap.put(
-                            ItemController.convertModel(orderToItem.getItem()),
-                            orderToItem.getQuantity()
-                    );
-
-                    totalAmount.updateAndGet(
-                            v -> v + orderToItem.getItem().getPrice() * orderToItem.getQuantity()
-                    );
-                }
-        );
+        Long orderTotalPrice = lineItems.stream()
+                .map(LineItemResponseDTO::getTotalPrice)
+                .reduce((x, y) -> x + y)
+                .orElse(0L);
 
         return OrderResponseDTO.builder()
                 .name(order.getName())
-                .itemDTOLongMap(itemDTOLongMap)
-                .orderTotalPrice(totalAmount.get())
+                .lineItems(lineItems)
+                .orderTotalPrice(orderTotalPrice)
                 .build();
     }
 }

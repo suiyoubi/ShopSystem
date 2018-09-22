@@ -1,7 +1,7 @@
 package com.ao.shopsystem.controller.dto.order;
 
-import com.ao.shopsystem.controller.dto.item.ItemDTO;
-import java.util.Map;
+import com.ao.shopsystem.controller.dto.lineitem.LineItemResponseDTO;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,7 +18,7 @@ public class OrderResponseDTO {
 
     private String name;
 
-    private Map<ItemDTO, Long> itemDTOLongMap;
+    private List<LineItemResponseDTO> lineItems;
 
     private Long orderTotalPrice;
 }

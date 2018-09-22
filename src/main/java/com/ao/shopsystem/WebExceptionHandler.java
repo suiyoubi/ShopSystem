@@ -1,6 +1,6 @@
 package com.ao.shopsystem;
 
-import com.ao.shopsystem.controller.ItemController;
+import com.ao.shopsystem.controller.ProductController;
 import com.ao.shopsystem.controller.OrderController;
 import com.ao.shopsystem.exception.AlreadyExistsException;
 import com.ao.shopsystem.exception.BadRequestException;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Controller Advice for all the controllers.
  * Created by ao on 2018-09-21
  */
-@ControllerAdvice(basePackageClasses = {ItemController.class, OrderController.class})
+@ControllerAdvice(basePackageClasses = {ProductController.class, OrderController.class})
 public class WebExceptionHandler {
 
     private static final String BAD_REQUEST_CODE = "400";

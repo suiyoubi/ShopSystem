@@ -1,5 +1,6 @@
 package com.ao.shopsystem.controller.dto.item;
 
+import com.ao.shopsystem.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * DTO for the {@link com.ao.shopsystem.entity.Item}
+ * DTO for the {@link Product}
  * Created by ao on 2018-09-21
  */
 @Builder
@@ -15,7 +16,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDTO {
+public class ProductDTO {
+
+    private Long productId;
 
     private String name;
 

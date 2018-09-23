@@ -2,13 +2,13 @@ package com.ao.shopsystem.service;
 
 import com.ao.shopsystem.controller.dto.shop.ShopRequestDto;
 import com.ao.shopsystem.entity.Shop;
-import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.ShopRepository;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 import com.ao.shopsystem.entity.Shop;
-import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.ShopRepository;
 import java.util.Optional;
+import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

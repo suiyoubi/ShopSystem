@@ -5,7 +5,6 @@ import com.ao.shopsystem.entity.LineItem;
 import com.ao.shopsystem.entity.Order;
 import com.ao.shopsystem.entity.Product;
 import com.ao.shopsystem.entity.Shop;
-import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.OrderRepository;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

@@ -10,6 +10,7 @@ import com.ao.shopsystem.repository.OrderRepository;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -139,26 +140,22 @@ public class OrderService {
         List<LineItem> lineItems = new LinkedList<>();
 
         if (Objects.nonNull(orderRequestDto.getItems())) {
-            orderRequestDto.getItems().forEach(
-                    (productId, quantity) -> {
 
-                        Product product;
-                        try {
-                            product = this.productService.findById(productId);
-                        } catch (NotFoundException e) {
+            for (Map.Entry<Long, Long> entry : orderRequestDto.getItems().entrySet()) {
 
-                            throw new RuntimeException(e);
-                        }
+                Long productId = entry.getKey();
+                Long quantity = entry.getValue();
 
-                        LineItem lineItem = new LineItem();
+                Product product = this.productService.findById(productId);
 
-                        lineItem.setProduct(product);
-                        lineItem.setQuantity(quantity);
-                        lineItem.setOrder(order);
+                LineItem lineItem = new LineItem();
 
-                        lineItems.add(lineItem);
-                    }
-            );
+                lineItem.setProduct(product);
+                lineItem.setQuantity(quantity);
+                lineItem.setOrder(order);
+
+                lineItems.add(lineItem);
+            }
         }
 
         order.setLineItems(lineItems);

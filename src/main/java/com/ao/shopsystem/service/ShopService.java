@@ -5,8 +5,10 @@ import com.ao.shopsystem.entity.Shop;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.ShopRepository;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,5 +114,19 @@ public class ShopService {
         shop.setAddress(newAddress);
 
         return this.shopRepository.save(shop);
+    }
+
+    /**
+     * retrieve all the shop entities
+     *
+     * @return list of all the shops
+     */
+    public List<Shop> getAddShops() {
+
+        log.info("retrieving all the shops");
+
+        return this.shopRepository.findAll().stream().filter(
+                shop -> Objects.isNull(shop.getDeletedAt())
+        ).collect(Collectors.toList());
     }
 }

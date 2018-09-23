@@ -34,6 +34,7 @@ public class ProductController {
 
     /**
      * retrieve the Product entity
+     *
      * @param productId the id of the product
      * @return ProductResponseDto with given id
      * @throws NotFoundException no product with productId being found
@@ -52,6 +53,7 @@ public class ProductController {
 
     /**
      * create a new product entity
+     *
      * @param productRequestDto representation of the newly created product
      * @return the response entity of product
      * @throws NotFoundException if no {@link com.ao.shopsystem.entity.Shop} with shopId being found
@@ -72,6 +74,7 @@ public class ProductController {
 
     /**
      * delete the product with given id
+     *
      * @param productId id of the product
      * @throws NotFoundException no such product being found
      */

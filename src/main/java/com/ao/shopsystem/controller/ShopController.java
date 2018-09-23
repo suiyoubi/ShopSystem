@@ -5,7 +5,9 @@ import com.ao.shopsystem.controller.dto.shop.ShopResponseDto;
 import com.ao.shopsystem.entity.Shop;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.service.ShopService;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -108,6 +110,23 @@ public class ShopController {
         );
 
         return ShopController.convertModel(shop);
+    }
+
+    /**
+     * retrieve all the shops
+     *
+     * @return list of all the response entity of shops
+     */
+    @GetMapping("/all")
+    public List<ShopResponseDto> getAllShops() {
+
+        log.info(ControllerLogHelper.NEW_API_CALL);
+
+        List<Shop> shops = this.shopService.getAddShops();
+
+        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "retrieved all the shops");
+
+        return shops.stream().map(ShopController::convertModel).collect(Collectors.toList());
     }
 
     static ShopResponseDto convertModel(Shop shop) {

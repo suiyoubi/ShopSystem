@@ -6,8 +6,10 @@ import com.ao.shopsystem.entity.Shop;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.repository.ProductRepository;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,5 +127,19 @@ public class ProductService {
         item.get().setDeletedAt(ZonedDateTime.now());
 
         this.productRepository.save(item.get());
+    }
+
+    /**
+     * retrieve all the product entities
+     *
+     * @return list of all the products
+     */
+    public List<Product> getAll() {
+
+        log.info("retrieving all the products");
+
+        return this.productRepository.findAll().stream().filter(
+                product -> Objects.isNull(product.getDeletedAt())
+        ).collect(Collectors.toList());
     }
 }

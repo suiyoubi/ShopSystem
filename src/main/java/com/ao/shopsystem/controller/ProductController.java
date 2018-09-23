@@ -5,6 +5,8 @@ import com.ao.shopsystem.controller.dto.product.ProductResponseDto;
 import com.ao.shopsystem.entity.Product;
 import com.ao.shopsystem.exception.NotFoundException;
 import com.ao.shopsystem.service.ProductService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -86,6 +88,21 @@ public class ProductController {
         this.productService.delete(productId);
 
         log.info(ControllerLogHelper.SUCCESS_MESSAGE + "deleted the product with id {}", productId);
+    }
+
+    /**
+     * retrieve all the products
+     *
+     * @return list of all the response entity of products
+     */
+    @GetMapping("/all")
+    public List<ProductResponseDto> getAllProducts() {
+
+        log.info(ControllerLogHelper.NEW_API_CALL);
+
+        List<Product> products = this.productService.getAll();
+
+        return products.stream().map(ProductController::convertModel).collect(Collectors.toList());
     }
 
     private static ProductResponseDto convertModel(Product product) {

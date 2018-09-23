@@ -144,6 +144,21 @@ public class OrderController {
         log.info(ControllerLogHelper.SUCCESS_MESSAGE + "deleted the order with id {}", orderId);
     }
 
+    /**
+     * retrieve all the orders
+     *
+     * @return list of all the response entity of orders
+     */
+    @GetMapping("/all")
+    public List<OrderResponseDto> getAllOrders() {
+
+        log.info(ControllerLogHelper.NEW_API_CALL);
+
+        List<Order> orders = this.orderService.getAll();
+
+        return orders.stream().map(OrderController::convertModel).collect(Collectors.toList());
+    }
+
     private static OrderResponseDto convertModel(Order order) {
 
         List<LineItemResponseDto> lineItems = order.getLineItems().stream().map(

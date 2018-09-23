@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -209,5 +210,19 @@ public class OrderService {
         order.setDeletedAt(ZonedDateTime.now());
 
         this.orderRepository.save(order);
+    }
+
+    /**
+     * retrieve all the order entities
+     *
+     * @return list of all the orders
+     */
+    public List<Order> getAll() {
+
+        log.info("retrieving all the orders");
+
+        return this.orderRepository.findAll().stream().filter(
+                order -> Objects.isNull(order.getDeletedAt())
+        ).collect(Collectors.toList());
     }
 }

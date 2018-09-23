@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shopsystem
-    username: admin
+    url: jdbc:postgresql://localhost:5432/shop-system
+    username: aoao
     driver-class-name: org.postgresql.Driver
+    password: aoao
   jpa:
     generate-ddl: true
     hibernate:

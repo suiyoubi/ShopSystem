@@ -140,11 +140,11 @@ public class OrderService {
 
         if (Objects.nonNull(orderRequestDto.getItems())) {
             orderRequestDto.getItems().forEach(
-                    (itemId, quantity) -> {
+                    (productId, quantity) -> {
 
                         Product product;
                         try {
-                            product = this.productService.findById(itemId);
+                            product = this.productService.findById(productId);
                         } catch (NotFoundException e) {
 
                             throw new RuntimeException(e);

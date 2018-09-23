@@ -31,6 +31,12 @@ public class ShopController {
         this.shopService = shopService;
     }
 
+    /**
+     * create the new shop entity
+     *
+     * @param shopRequestDto the request entity for shop
+     * @return the response entity for shop
+     */
     @PostMapping
     public ShopResponseDto createShop(@RequestBody ShopRequestDto shopRequestDto) {
 
@@ -43,6 +49,13 @@ public class ShopController {
         return ShopController.convertModel(shop);
     }
 
+    /**
+     * retrieve the shop with the given id
+     *
+     * @param shopId id of the shop entity
+     * @return the response entity for shop
+     * @throws NotFoundException if no such shop being found
+     */
     @GetMapping("/{shopId}")
     public ShopResponseDto getShop(@PathVariable Long shopId) throws NotFoundException {
 
@@ -55,6 +68,12 @@ public class ShopController {
         return ShopController.convertModel(shop);
     }
 
+    /**
+     * delete the shop with given id
+     *
+     * @param shopId id of the shop entity
+     * @throws NotFoundException no such shop being found
+     */
     @DeleteMapping("/{shopId}")
     public void deleteShop(@PathVariable Long shopId) throws NotFoundException {
 
@@ -66,6 +85,14 @@ public class ShopController {
 
     }
 
+    /**
+     * update the address of a specified shop
+     *
+     * @param shopId id of the shop entity
+     * @param newAddress new address
+     * @return updated response entity for shop
+     * @throws NotFoundException no such shop being found
+     */
     @PatchMapping("/{shopId}/address")
     public ShopResponseDto changeAddress(@PathVariable Long shopId, @RequestBody String newAddress)
             throws NotFoundException {

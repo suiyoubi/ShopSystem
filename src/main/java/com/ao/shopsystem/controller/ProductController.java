@@ -32,8 +32,14 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /**
+     * retrieve the Product entity
+     * @param productId the id of the product
+     * @return ProductResponseDto with given id
+     * @throws NotFoundException no product with productId being found
+     */
     @GetMapping("/{productId}")
-    public ProductResponseDto getItem(@PathVariable Long productId) throws NotFoundException {
+    public ProductResponseDto getProduct(@PathVariable Long productId) throws NotFoundException {
 
         log.info(ControllerLogHelper.NEW_API_CALL);
 
@@ -44,6 +50,12 @@ public class ProductController {
         return ProductController.convertModel(product);
     }
 
+    /**
+     * create a new product entity
+     * @param productRequestDto representation of the newly created product
+     * @return the response entity of product
+     * @throws NotFoundException if no {@link com.ao.shopsystem.entity.Shop} with shopId being found
+     */
     @PostMapping
     public ProductResponseDto createProduct(@RequestBody ProductRequestDto productRequestDto)
             throws NotFoundException {
@@ -58,6 +70,11 @@ public class ProductController {
         return ProductController.convertModel(product);
     }
 
+    /**
+     * delete the product with given id
+     * @param productId id of the product
+     * @throws NotFoundException no such product being found
+     */
     @DeleteMapping("/{productId}")
     public void deleteProduct(@PathVariable Long productId) throws NotFoundException {
 

@@ -36,6 +36,13 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    /**
+     * Retrieve the order entity.
+     *
+     * @param orderId id of the order
+     * @return orderResponseDto with the specified id
+     * @throws NotFoundException if no order with the id being found.
+     */
     @GetMapping("/{orderId}")
     private OrderResponseDto getOrder(@PathVariable Long orderId) throws NotFoundException {
 
@@ -48,6 +55,13 @@ public class OrderController {
         return OrderController.convertModel(order);
     }
 
+    /**
+     * Create a new order entity
+     *
+     * @param orderRequestDto representation of the newly created order
+     * @return orderResponseDto that has been created
+     * @throws NotFoundException if {@link com.ao.shopsystem.entity.Product} can not be found
+     */
     @PostMapping
     private OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto)
             throws NotFoundException {
@@ -56,10 +70,20 @@ public class OrderController {
 
         Order order = this.orderService.createOrder(orderRequestDto);
 
-        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "created the order with id {}", order.getId());
+        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "created the order with id {}",
+                order.getId());
         return OrderController.convertModel(order);
     }
 
+    /**
+     * update the quantity of a specified order's product.
+     * if item is not found in the order entity, add the new item to the order.
+     *
+     * @param productQuantityPair pair of product Id and new quantity
+     * @param orderId the id of the order
+     * @return updated OrderResponseDto
+     * @throws NotFoundException no such order with orderId or item with itemId being found
+     */
     @PatchMapping("/{orderId}/productQuantityPair")
     private OrderResponseDto updateProductQuantity(
             @RequestBody ProductQuantityPair productQuantityPair,
@@ -74,10 +98,19 @@ public class OrderController {
                 productQuantityPair.getQuantity()
         );
 
-        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "updatedProductQuantity for order: ", orderId);
+        log.info(ControllerLogHelper.SUCCESS_MESSAGE + "updatedProductQuantity for order: ",
+                orderId);
         return OrderController.convertModel(order);
     }
 
+    /**
+     * update the shop attribute of the specified order
+     *
+     * @param shopId id of the shop entity
+     * @param orderId id of the order entity
+     * @return updated OrderResponseDto
+     * @throws NotFoundException if no shop with shopId or order with orderId being found
+     */
     @PatchMapping("/{orderId}/shop")
     private OrderResponseDto updateShop(@RequestBody Long shopId, @PathVariable Long orderId)
             throws NotFoundException {
@@ -95,6 +128,12 @@ public class OrderController {
         return OrderController.convertModel(order);
     }
 
+    /**
+     * soft delete the order with given id
+     *
+     * @param orderId the id of the order
+     * @throws NotFoundException no such order with orderid being found
+     */
     @DeleteMapping("/{orderId}")
     private void deleteOrder(@PathVariable Long orderId) throws NotFoundException {
 

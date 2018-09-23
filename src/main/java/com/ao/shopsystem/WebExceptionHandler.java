@@ -1,24 +1,23 @@
 package com.ao.shopsystem;
 
-import com.ao.shopsystem.controller.ProductController;
-import com.ao.shopsystem.controller.OrderController;
 import com.ao.shopsystem.exception.AlreadyExistsException;
 import com.ao.shopsystem.exception.BadRequestException;
 import com.ao.shopsystem.exception.ForbiddenAccessException;
 import java.util.HashMap;
 import java.util.Map;
-import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * Controller Advice for all the controllers.
  * Created by ao on 2018-09-21
  */
-@ControllerAdvice(basePackageClasses = {ProductController.class, OrderController.class})
+@ControllerAdvice
+@EnableWebMvc
 public class WebExceptionHandler {
 
     private static final String BAD_REQUEST_CODE = "400";
@@ -58,7 +57,7 @@ public class WebExceptionHandler {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(com.ao.shopsystem.exception.NotFoundException.class)
     public Map<String, String> handleNotFound(Exception e) {
 
         Map<String, String> response = new HashMap<>();

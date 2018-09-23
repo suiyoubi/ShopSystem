@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ShopSystemApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ShopSystemApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ShopSystemApplication.class, args);
+    }
 }

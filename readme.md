@@ -8,6 +8,14 @@ Shop System is a simple server-side web API that models the common relationships
 * Oder can have several line items (or nothing !)
 * Shop has many orders
 
+##Database Setup
+* Please install [PostgreSQL](https://www.postgresql.org/download/)
+* Have a SUPERUSER named "admin"
+* Run the script [init.sh](/database_setup/init.sh)
+
+The script is to create a database named "shop-system", 
+create a user named "aoao", 
+and import data into the database.
 
 
 
@@ -381,3 +389,4 @@ __sample response:__
     }
 }
 ```
+

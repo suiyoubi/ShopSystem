@@ -1,5 +1,23 @@
 spring:
   datasource:
+    url: jdbc:postgresql://db:5432/shopsystem
+    username: test
+    driver-class-name: org.postgresql.Driver
+    password: test
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
+---
+
+spring:
+  profiles: dev
+  datasource:
     url: jdbc:postgresql://localhost:5432/shopsystem
     username: admin
     driver-class-name: org.postgresql.Driver
@@ -11,3 +29,7 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+
+
+
+

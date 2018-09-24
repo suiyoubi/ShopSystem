@@ -19,10 +19,15 @@ and import data into the database.
 
 
 
-
 ## API Endpoints
 
 Complete JavaDoc is documented.
+
+I have created a Postmen collection that helps to test all my API endpoints.
+You can get it from [here](https://www.getpostman.com/collections/a70e4c1c54ea0f50c969).
+
+You can also view my API endpoints example request/response at 
+[here](https://documenter.getpostman.com/view/4777847/RWaPskma#3c6f31ad-05ef-4d74-890d-44f9ab2a4b63)
 
 ### Shop Resources
 - `GET /shops/{shopId}` : Returns json data about a single shop.

@@ -1,0 +1,12 @@
+server {
+	listen 80;
+	server_name shop-system;
+	access_log /etc/www/shop-system/logs/access.log;
+	error_log /etc/www/shop-system/logs/error.log;
+	root /etc/www/shop-system/dist/;
+
+	location / {
+		proxy_pass http://localhost:8080;
+	}		
+}
+

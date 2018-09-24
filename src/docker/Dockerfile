@@ -18,6 +18,8 @@ RUN sh ./init.sh
 
 USER root
 
+RUN sh ./update-conf.sh
+
 FROM openjdk:8
 
 RUN apt-get update

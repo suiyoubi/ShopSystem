@@ -1,7 +1,7 @@
 .gradle
 .DS_Store
 /src/docker/data
-/src/docker/toBeExported
+/src/docker/toBeExported/shopsystem-0.0.1-SNAPSHOT.jar
 /build/
 gradle/wrapper/gradle-wrapper.jar
 out/*
